@@ -1,31 +1,17 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
 import DashboardLayout from "./components/DashboardLayout";
 import AlertsPage from "./pages/AlertsPage";
 import ShiftsPage from "./pages/ShiftsPage";
 import ShiftDetailPage from "./pages/ShiftDetailPage";
 import ChatPage from "./pages/ChatPage";
 import SettingsPage from "./pages/SettingsPage";
-import { getToken } from "./lib/api";
-
-const Protected = ({ children }: { children: JSX.Element }) => {
-  if (!getToken()) return <Navigate to="/login" replace />;
-  return children;
-};
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/"
-        element={
-          <Protected>
-            <DashboardLayout />
-          </Protected>
-        }
+        element={<DashboardLayout />}
       >
         <Route index element={<Navigate to="/alerts" replace />} />
         <Route path="alerts" element={<AlertsPage />} />
