@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RawFileStatus {
+  RECEIVED
+  PARSED
+  ERROR
+  DUPLICATE
+}
+
+enum AlertSeverity {
+  info
+  warn
+  critical
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  stores       Store[]
+  chatQueries  ChatQuery[]
+}
+
+model Store {
+  id        String   @id @default(uuid())
+  ownerId   String
+  name      String
+  timezone  String   @default("America/New_York")
+  storeAccessTokenHash      String?
+  storeAccessTokenLast4     String?
+  storeAccessTokenCreatedAt DateTime?
+  createdAt DateTime @default(now())
+  owner     User     @relation(fields: [ownerId], references: [id])
+  devices   Device[]
+  rawFiles  RawFile[]
+  shifts    Shift[]
+  alerts    Alert[]
+  chats     ChatQuery[]
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  storeId     String
+  name        String
+  apiKeyHash  String
+  apiKeyLast4 String
+  createdAt   DateTime @default(now())
+  lastSeenAt  DateTime?
+  store       Store    @relation(fields: [storeId], references: [id])
+  rawFiles    RawFile[]
+}
+
+model RawFile {
+  id         String       @id @default(uuid())
+  storeId    String
+  deviceId   String?
+  filename   String
+  sha256     String
+  sizeBytes  Int
+  receivedAt DateTime     @default(now())
+  parsedAt   DateTime?
+  status     RawFileStatus
+  error      String?
+  rawXml     String
+  reportType String?
+  store      Store        @relation(fields: [storeId], references: [id])
+  device     Device?      @relation(fields: [deviceId], references: [id])
+  shifts     Shift[]
+
+  @@unique([storeId, sha256])
+}
+
+model Shift {
+  id              String   @id @default(uuid())
+  storeId         String
+  registerId      String?
+  operatorId      String?
+  startAt         DateTime?
+  endAt           DateTime?
+  totalSales      Decimal  @db.Decimal(12, 2)
+  fuelSales       Decimal  @db.Decimal(12, 2)
+  nonFuelSales    Decimal  @db.Decimal(12, 2)
+  refunds         Decimal  @db.Decimal(12, 2)
+  voidCount       Int
+  discountTotal   Decimal  @db.Decimal(12, 2)
+  taxTotal        Decimal  @db.Decimal(12, 2)
+  customerCount   Int?
+  sourceRawFileId String
+  createdAt       DateTime @default(now())
+  store           Store    @relation(fields: [storeId], references: [id])
+  sourceRawFile   RawFile  @relation(fields: [sourceRawFileId], references: [id])
+  deptSales       DeptSale[]
+  alerts          Alert[]
+}
+
+model DeptSale {
+  id             String  @id @default(uuid())
+  shiftId        String
+  departmentName String
+  amount         Decimal @db.Decimal(12, 2)
+  shift          Shift   @relation(fields: [shiftId], references: [id])
+}
+
+model Alert {
+  id         String        @id @default(uuid())
+  storeId    String
+  shiftId    String?
+  severity   AlertSeverity
+  type       String
+  title      String
+  message    String
+  createdAt  DateTime      @default(now())
+  resolvedAt DateTime?
+  store      Store         @relation(fields: [storeId], references: [id])
+  shift      Shift?        @relation(fields: [shiftId], references: [id])
+}
+
+model ChatQuery {
+  id        String   @id @default(uuid())
+  storeId   String
+  userId    String?
+  question  String
+  intent    String
+  answer    String
+  createdAt DateTime @default(now())
+  store     Store    @relation(fields: [storeId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+}
