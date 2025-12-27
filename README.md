@@ -16,6 +16,7 @@ Silent Manager is a mobile-first web app for gas station owners to monitor shift
 - `packages/shared`: Shared types
 
 ## Access model (MVP)
+This MVP uses a Store Access Token instead of login/register for both web and mobile.
 This MVP uses a Store Access Token for the mobile app instead of login/register.
 
 - Each Store has a secret `storeAccessToken` stored hashed in the DB.
