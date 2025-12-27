@@ -1,22 +1,24 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import ConnectPage from "./pages/ConnectPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import DashboardLayout from "./components/DashboardLayout";
 import AlertsPage from "./pages/AlertsPage";
 import ShiftsPage from "./pages/ShiftsPage";
 import ShiftDetailPage from "./pages/ShiftDetailPage";
 import ChatPage from "./pages/ChatPage";
 import SettingsPage from "./pages/SettingsPage";
-import { getStoreToken } from "./lib/api";
+import { getToken } from "./lib/api";
 
 const Protected = ({ children }: { children: JSX.Element }) => {
-  if (!getStoreToken()) return <Navigate to="/connect" replace />;
+  if (!getToken()) return <Navigate to="/login" replace />;
   return children;
 };
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/connect" element={<ConnectPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/"
         element={
@@ -32,7 +34,6 @@ const App = () => {
         <Route path="chat" element={<ChatPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/connect" replace />} />
     </Routes>
   );
 };

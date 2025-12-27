@@ -17,10 +17,16 @@ Silent Manager is a mobile-first web app for gas station owners to monitor shift
 
 ## Access model (MVP)
 This MVP uses a Store Access Token instead of login/register for both web and mobile.
+This MVP uses a Store Access Token for the mobile app instead of login/register.
 
 - Each Store has a secret `storeAccessToken` stored hashed in the DB.
 - Generate a token via seed output or `POST /api/stores/:storeId/access-token`.
 - **Warning:** If you do not set `ADMIN_BOOTSTRAP_SECRET`, the access-token endpoint is unprotected.
+
+- `backend/api`: Express + Prisma API
+- `frontend/web`: React + Vite + Tailwind UI
+- `backend/agent`: Node.js Windows agent
+- `packages/shared`: Shared types
 
 ## Local development
 
@@ -46,12 +52,14 @@ cp apps/api/.env.example apps/api/.env
 
 ```bash
 ADMIN_BOOTSTRAP_SECRET=change-me
+cp backend/api/.env.example backend/api/.env
 ```
 
 4. Run Prisma migrations and seed:
 
 ```bash
 cd apps/api
+cd backend/api
 npx prisma migrate dev --name init
 npm run seed
 ```
@@ -66,6 +74,7 @@ npm run dev
 
 ```bash
 cd ../web
+cd ../../frontend/web
 cp .env.example .env
 npm run dev
 ```
@@ -86,6 +95,10 @@ Then press `i` to open iOS Simulator.
 
 ```bash
 cd ../agent
+7. Agent setup:
+
+```bash
+cd ../../backend/agent
 cp config.example.json config.json
 npm install
 npm run build
@@ -96,6 +109,7 @@ node dist/index.js start --config config.json
 ## Simulate ingest locally
 
 Use the sample XML fixtures in `apps/api/src/parsers/sample` and the agent test command:
+Use the sample XML fixtures in `backend/api/src/parsers/sample` and the agent test command:
 
 ```bash
 node dist/index.js test-upload --config config.json --file ../api/src/parsers/sample/shift-report-sample.xml
