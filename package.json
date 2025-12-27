@@ -1,0 +1,11 @@
+{
+  "name": "silentmanager",
+  "private": true,
+  "workspaces": ["frontend/*", "backend/*", "packages/*"],
+  "scripts": {
+    "dev": "npm --workspace backend/api run dev & npm --workspace frontend/web run dev",
+    "build": "npm --workspace backend/api run build && npm --workspace frontend/web run build",
+    "lint": "npm --workspace backend/api run lint && npm --workspace frontend/web run lint",
+    "test": "npm --workspace backend/api run test"
+  }
+}

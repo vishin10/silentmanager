@@ -1,0 +1,19 @@
+<StoreSalesSummary>
+  <ReportName>StoreSummary</ReportName>
+  <Period>
+    <From>2024-05-11T00:00:00-04:00</From>
+    <To>2024-05-11T23:59:59-04:00</To>
+  </Period>
+  <Totals>
+    <Gross>2420.11</Gross>
+    <FuelSales>1335.99</FuelSales>
+    <NonFuelSales>1084.12</NonFuelSales>
+    <Tax>143.20</Tax>
+    <Refunds>34.55</Refunds>
+    <Voids>6</Voids>
+  </Totals>
+  <Department>
+    <DepartmentName>Department - Tobacco</DepartmentName>
+    <Amount>412.00</Amount>
+  </Department>
+</StoreSalesSummary>
