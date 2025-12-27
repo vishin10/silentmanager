@@ -1,6 +1,6 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { api, clearToken } from "../lib/api";
+import { api } from "../lib/api";
 
 const navItems = [
   { label: "Alerts", path: "/alerts" },
@@ -57,15 +57,6 @@ const DashboardLayout = () => {
               </option>
             ))}
           </select>
-          <button
-            className="text-xs text-slate-500"
-            onClick={() => {
-              clearToken();
-              window.location.href = "/login";
-            }}
-          >
-            Sign out
-          </button>
         </div>
       </header>
 

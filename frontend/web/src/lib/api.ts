@@ -1,16 +1,10 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-export const getToken = () => localStorage.getItem("sm_token");
-export const setToken = (token: string) => localStorage.setItem("sm_token", token);
-export const clearToken = () => localStorage.removeItem("sm_token");
-
 const request = async <T>(path: string, options: RequestInit = {}): Promise<T> => {
-  const token = getToken();
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {})
     }
   });
@@ -22,16 +16,6 @@ const request = async <T>(path: string, options: RequestInit = {}): Promise<T> =
 };
 
 export const api = {
-  register: (email: string, password: string) =>
-    request<{ token: string }>("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({ email, password })
-    }),
-  login: (email: string, password: string) =>
-    request<{ token: string }>("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password })
-    }),
   stores: () => request<any[]>("/api/stores"),
   createStore: (name: string, timezone: string) =>
     request<any>("/api/stores", { method: "POST", body: JSON.stringify({ name, timezone }) }),
