@@ -7,9 +7,12 @@ export interface AuthRequest extends Request {
 
 export const requireAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
   const header = req.headers.authorization;
-  if (!header?.startsWith("Bearer ")) {
-    return res.status(401).json({ error: "Missing auth token" });
+  
+  // Allow requests without token (will be handled in routes)
+  if (!header || !header.startsWith("Bearer ")) {
+    return next();
   }
+  
   const token = header.replace("Bearer ", "");
   try {
     const payload = verifyJwt(token);
